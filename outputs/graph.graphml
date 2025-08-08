@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d1" for="node" attr.name="label" attr.type="string"/>
+<key id="d0" for="node" attr.name="type" attr.type="string"/>
+<graph edgedefault="directed"><node id="subject:subject_a">
+  <data key="d0">subject</data>
+  <data key="d1">Test A</data>
+</node>
+<node id="subject:subject_b">
+  <data key="d0">subject</data>
+  <data key="d1">Test B</data>
+</node>
+</graph></graphml>

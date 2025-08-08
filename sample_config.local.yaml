@@ -1,0 +1,25 @@
+subjects:
+  - id: subject_a
+    names: ["Test A"]
+    usernames: []
+    seed_urls: []
+  - id: subject_b
+    names: ["Test B"]
+    usernames: []
+    seed_urls: []
+
+search:
+  platforms: []  # no external calls
+  image_results_per_query: 5
+
+face:
+  provider: none
+  confidence_threshold: 0.67
+
+report:
+  title: "OSINT Connection Report (Local Test)"
+  output_dir: "outputs"
+
+storage:
+  base_dir: "data"
+  keep_originals: true

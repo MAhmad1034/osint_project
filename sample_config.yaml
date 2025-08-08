@@ -1,0 +1,26 @@
+subjects:
+  - id: subject_a
+    names: ["John Doe"]
+    usernames: ["john_doe"]
+    seed_urls: []
+  - id: subject_b
+    names: ["Jane Smith"]
+    usernames: ["jane_smith"]
+    seed_urls: []
+
+search:
+  platforms: ["duckduckgo_images", "instagram_public"]
+  image_results_per_query: 30
+
+face:
+  provider: azure
+  # Use environment variables AZURE_FACE_ENDPOINT and AZURE_FACE_KEY
+  confidence_threshold: 0.67
+
+report:
+  title: "OSINT Connection Report"
+  output_dir: "outputs"
+
+storage:
+  base_dir: "data"
+  keep_originals: true

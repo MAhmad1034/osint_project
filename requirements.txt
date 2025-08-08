@@ -1,0 +1,13 @@
+python-dotenv>=1.0.1
+PyYAML>=6.0.2
+requests>=2.32.3
+beautifulsoup4>=4.12.3
+duckduckgo-search>=6.2.11
+Pillow>=10.3.0
+imagehash>=4.3.1
+ExifRead>=3.0.0
+networkx>=3.3
+Jinja2>=3.1.4
+instaloader>=4.13.1
+tenacity>=8.5.0
+pandas>=2.2.2

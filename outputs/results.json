@@ -1,0 +1,23 @@
+{
+  "subjects": [
+    {
+      "id": "subject_a",
+      "names": [
+        "Test A"
+      ],
+      "usernames": [],
+      "instagram": {},
+      "reference_face_available": false
+    },
+    {
+      "id": "subject_b",
+      "names": [
+        "Test B"
+      ],
+      "usernames": [],
+      "instagram": {},
+      "reference_face_available": false
+    }
+  ],
+  "images": []
+}
