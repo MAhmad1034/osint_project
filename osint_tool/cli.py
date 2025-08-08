@@ -41,20 +41,32 @@ def init(subject_a: str = typer.Option(..., help="Folder-friendly ID for subject
 def collect(subject: str = typer.Option(..., help="Subject folder-friendly ID"),
             query: str = typer.Option(..., help="Public search query (quotes, keywords, handles)"),
             limit: int = typer.Option(30, help="Max results to fetch for links and images"),
-            save_images: bool = typer.Option(True, help="Download discovered images")):
+            save_images: bool = typer.Option(True, help="Download discovered images"),
+            provider: str = typer.Option("ddg", help="Search provider: ddg|bing")):
     cfg = load_config()
 
-    try:
-        web_results = search_web(query, max_results=limit)
-    except Exception as e:
-        print(f"[yellow]Warning:[/yellow] web search failed ({e}). Proceeding with zero results.")
-        web_results = []
+    web_results = []
+    image_results = []
 
-    try:
-        image_results = search_images(query, max_results=limit)
-    except Exception as e:
-        print(f"[yellow]Warning:[/yellow] image search failed ({e}). Proceeding with zero images.")
-        image_results = []
+    if provider.lower() == "bing":
+        from osint_tool.collectors.bing import bing_web_search, bing_image_search
+        try:
+            web_results = bing_web_search(cfg, query, max_results=limit)
+        except Exception as e:
+            print(f"[yellow]Warning:[/yellow] Bing web search failed ({e}). Proceeding with zero results.")
+        try:
+            image_results = bing_image_search(cfg, query, max_results=limit)
+        except Exception as e:
+            print(f"[yellow]Warning:[/yellow] Bing image search failed ({e}). Proceeding with zero images.")
+    else:
+        try:
+            web_results = search_web(query, max_results=limit)
+        except Exception as e:
+            print(f"[yellow]Warning:[/yellow] web search failed ({e}). Proceeding with zero results.")
+        try:
+            image_results = search_images(query, max_results=limit)
+        except Exception as e:
+            print(f"[yellow]Warning:[/yellow] image search failed ({e}). Proceeding with zero images.")
 
     links = [r.href for r in web_results if r.href]
     meta_out = cfg.data_dir / "raw" / subject / "metadata" / "search_results.jsonl"

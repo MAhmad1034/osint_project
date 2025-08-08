@@ -52,10 +52,14 @@ Key commands:
    ```bash
    python main.py init --subject-a "subject_a" --subject-b "subject_b"
    ```
-2. Collect public images and links for each subject (tune queries and limits):
+2. Collect public images and links for each subject (tune queries and limits). To avoid DDG rate limits, prefer Bing with API key:
    ```bash
+   # DuckDuckGo (may rate limit in some environments)
    python main.py collect --subject "subject_a" --query "\"First Last\" city keyword" --limit 50
-   python main.py collect --subject "subject_b" --query "\"First Last\" company keyword" --limit 50
+
+   # Bing (recommended) requires `BING_SEARCH_API_KEY` in .env
+   python main.py collect --subject "subject_a" --query "\"First Last\" city keyword" --limit 50 --provider bing
+   python main.py collect --subject "subject_b" --query "\"First Last\" company keyword" --limit 50 --provider bing
    ```
 3. Analyze overlaps (domains, repeated handles, co-mentions in result snippets):
    ```bash
