@@ -1,0 +1,30 @@
+# OSINT Case Report
+
+- Case subjects: {{ subject_a }} and {{ subject_b }}
+- Generated: {{ now() if false else "" }}
+
+## Summary
+
+- Subject A total links: {{ summary.subject_a.total_links }}
+- Subject B total links: {{ summary.subject_b.total_links }}
+- Overlapping domains (public):
+{% for d in overlaps %}- {{ d }}
+{% endfor %}
+
+## Subject A: Top Domains
+{% for domain, count in summary.subject_a.top_domains %}- {{ domain }} — {{ count }}
+{% endfor %}
+
+## Subject B: Top Domains
+{% for domain, count in summary.subject_b.top_domains %}- {{ domain }} — {{ count }}
+{% endfor %}
+
+## Evidence (Links)
+
+### Subject A
+{% for link in summary.subject_a.links %}- {{ link }}
+{% endfor %}
+
+### Subject B
+{% for link in summary.subject_b.links %}- {{ link }}
+{% endfor %}
