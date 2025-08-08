@@ -13,9 +13,9 @@ search:
   image_results_per_query: 30
 
 face:
-  provider: local_insightface
+  provider: local_onnx_arcface
   similarity_threshold: 0.35
-  # Optional Azure settings via env vars if you switch provider to 'azure'
+  # Place ONNX model at data/models/arcfaceresnet100-8.onnx
   confidence_threshold: 0.67
 
 report:

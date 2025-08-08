@@ -9,7 +9,9 @@ from .image_store import ImageStore, StoredImage
 from .scrapers.web_search import duckduckgo_image_search
 from .scrapers.instagram_public import fetch_public_profile
 from .face.azure_face import AzureFaceClient
-from .face.local_insightface import LocalInsightFace
+# Avoid importing heavy optional providers at module import time
+# from .face.local_insightface import LocalInsightFace
+# from .face.local_deepface import LocalDeepFace
 from .graph.graph_builder import GraphBuilder
 from .report.report_builder import ReportBuilder, ReportImage
 
@@ -29,9 +31,22 @@ class Pipeline:
             self.face_client = AzureFaceClient(self.config.face.azure_endpoint, self.config.face.azure_key)
         elif self.config.face.provider == "local_insightface":
             try:
+                from .face.local_insightface import LocalInsightFace  # type: ignore
                 self.local_face = LocalInsightFace()
             except Exception as e:
                 logger.warning("Failed to initialize LocalInsightFace: %s", e)
+        elif self.config.face.provider == "local_deepface":
+            try:
+                from .face.local_deepface import LocalDeepFace  # type: ignore
+                self.local_face = LocalDeepFace()
+            except Exception as e:
+                logger.warning("Failed to initialize LocalDeepFace: %s", e)
+        elif self.config.face.provider == "local_onnx_arcface":
+            try:
+                from .face.local_onnx_arcface import LocalOnnxArcFace  # type: ignore
+                self.local_face = LocalOnnxArcFace()
+            except Exception as e:
+                logger.warning("Failed to initialize LocalOnnxArcFace: %s", e)
 
     def _collect_duckduckgo_images(self, subject: SubjectConfig) -> List[StoredImage]:
         images: List[StoredImage] = []

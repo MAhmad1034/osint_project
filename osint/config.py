@@ -23,9 +23,9 @@ class SearchConfig:
 
 @dataclass
 class FaceConfig:
-    provider: str = "local_insightface"  # default to free local provider
+    provider: str = "local_deepface"  # default to free local provider with wheels on Windows
     confidence_threshold: float = 0.67     # used by Azure
-    similarity_threshold: float = 0.35     # used by local_insightface
+    similarity_threshold: float = 0.35     # used by local providers
     azure_endpoint: Optional[str] = None
     azure_key: Optional[str] = None
 
