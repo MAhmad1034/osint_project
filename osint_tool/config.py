@@ -23,6 +23,8 @@ class AppConfig:
     facecheck_api_key: Optional[str] = None
     azure_face_endpoint: Optional[str] = None
     azure_face_key: Optional[str] = None
+    # Optional Brave
+    brave_api_key: Optional[str] = None
 
 
 def load_config(config_path: Optional[Path] = None) -> AppConfig:
@@ -50,6 +52,7 @@ def load_config(config_path: Optional[Path] = None) -> AppConfig:
         facecheck_api_key=os.getenv("FACECHECK_API_KEY", cfg_yaml.get("facecheck_api_key")),
         azure_face_endpoint=os.getenv("AZURE_FACE_ENDPOINT", cfg_yaml.get("azure_face_endpoint")),
         azure_face_key=os.getenv("AZURE_FACE_KEY", cfg_yaml.get("azure_face_key")),
+        brave_api_key=os.getenv("BRAVE_SEARCH_API_KEY", cfg_yaml.get("brave_api_key")),
     )
 
     cfg.data_dir.mkdir(parents=True, exist_ok=True)

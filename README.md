@@ -42,7 +42,7 @@ python main.py --help
 
 Key commands:
 - `init` — Creates data directories for two subjects.
-- `collect` — Public web search + image harvesting for a subject.
+- `collect` — Public web search + image harvesting for a subject. Providers: `ddg` (default), `bing`, `serpapi`, `brave`.
 - `analyze` — Builds a lightweight graph of public sources and overlaps.
 - `report` — Generates a Markdown report with links and evidence.
 - `face-search` — Disabled by default. Requires explicit opt-in via env and provider keys.
@@ -52,13 +52,18 @@ Key commands:
    ```bash
    python main.py init --subject-a "subject_a" --subject-b "subject_b"
    ```
-2. Collect public images and links for each subject (tune queries and limits). To avoid DDG rate limits, prefer Bing with API key:
+2. Collect public images and links for each subject (tune queries and limits). To avoid DDG rate limits, use an API-backed provider:
    ```bash
-   # DuckDuckGo (may rate limit in some environments)
-   python main.py collect --subject "subject_a" --query "\"First Last\" city keyword" --limit 50
+   # DuckDuckGo (may rate limit)
+   python main.py collect --subject "subject_a" --query "\"First Last\" city keyword" --limit 50 --provider ddg
 
-   # Bing (recommended) requires `BING_SEARCH_API_KEY` in .env
-   python main.py collect --subject "subject_a" --query "\"First Last\" city keyword" --limit 50 --provider bing
+   # SerpAPI (Google results) requires `SERPAPI_API_KEY`
+   python main.py collect --subject "subject_a" --query "\"First Last\" city keyword" --limit 50 --provider serpapi
+
+   # Brave Search requires `BRAVE_SEARCH_API_KEY`
+   python main.py collect --subject "subject_b" --query "\"First Last\" company keyword" --limit 50 --provider brave
+
+   # Bing (being retired Aug 2025—avoid for new deployments) requires `BING_SEARCH_API_KEY`
    python main.py collect --subject "subject_b" --query "\"First Last\" company keyword" --limit 50 --provider bing
    ```
 3. Analyze overlaps (domains, repeated handles, co-mentions in result snippets):

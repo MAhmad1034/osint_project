@@ -42,13 +42,14 @@ def collect(subject: str = typer.Option(..., help="Subject folder-friendly ID"),
             query: str = typer.Option(..., help="Public search query (quotes, keywords, handles)"),
             limit: int = typer.Option(30, help="Max results to fetch for links and images"),
             save_images: bool = typer.Option(True, help="Download discovered images"),
-            provider: str = typer.Option("ddg", help="Search provider: ddg|bing")):
+            provider: str = typer.Option("ddg", help="Search provider: ddg|bing|serpapi|brave")):
     cfg = load_config()
 
     web_results = []
     image_results = []
 
-    if provider.lower() == "bing":
+    p = provider.lower()
+    if p == "bing":
         from osint_tool.collectors.bing import bing_web_search, bing_image_search
         try:
             web_results = bing_web_search(cfg, query, max_results=limit)
@@ -58,6 +59,26 @@ def collect(subject: str = typer.Option(..., help="Subject folder-friendly ID"),
             image_results = bing_image_search(cfg, query, max_results=limit)
         except Exception as e:
             print(f"[yellow]Warning:[/yellow] Bing image search failed ({e}). Proceeding with zero images.")
+    elif p == "serpapi":
+        from osint_tool.collectors.serpapi import serpapi_web_search, serpapi_image_search
+        try:
+            web_results = serpapi_web_search(cfg, query, max_results=limit)
+        except Exception as e:
+            print(f"[yellow]Warning:[/yellow] SerpAPI web search failed ({e}). Proceeding with zero results.")
+        try:
+            image_results = serpapi_image_search(cfg, query, max_results=limit)
+        except Exception as e:
+            print(f"[yellow]Warning:[/yellow] SerpAPI image search failed ({e}). Proceeding with zero images.")
+    elif p == "brave":
+        from osint_tool.collectors.brave import brave_web_search, brave_image_search
+        try:
+            web_results = brave_web_search(cfg, query, max_results=limit)
+        except Exception as e:
+            print(f"[yellow]Warning:[/yellow] Brave web search failed ({e}). Proceeding with zero results.")
+        try:
+            image_results = brave_image_search(cfg, query, max_results=limit)
+        except Exception as e:
+            print(f"[yellow]Warning:[/yellow] Brave image search failed ({e}). Proceeding with zero images.")
     else:
         try:
             web_results = search_web(query, max_results=limit)
