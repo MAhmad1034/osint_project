@@ -9,6 +9,7 @@ from .image_store import ImageStore, StoredImage
 from .scrapers.web_search import duckduckgo_image_search
 from .scrapers.instagram_public import fetch_public_profile
 from .face.azure_face import AzureFaceClient
+from .face.local_insightface import LocalInsightFace
 from .graph.graph_builder import GraphBuilder
 from .report.report_builder import ReportBuilder, ReportImage
 
@@ -23,8 +24,14 @@ class Pipeline:
         self.graph = GraphBuilder()
 
         self.face_client = None
+        self.local_face = None
         if self.config.face.provider == "azure" and self.config.face.azure_endpoint and self.config.face.azure_key:
             self.face_client = AzureFaceClient(self.config.face.azure_endpoint, self.config.face.azure_key)
+        elif self.config.face.provider == "local_insightface":
+            try:
+                self.local_face = LocalInsightFace()
+            except Exception as e:
+                logger.warning("Failed to initialize LocalInsightFace: %s", e)
 
     def _collect_duckduckgo_images(self, subject: SubjectConfig) -> List[StoredImage]:
         images: List[StoredImage] = []
@@ -66,24 +73,32 @@ class Pipeline:
             meta[handle] = m
         return meta
 
-    def _pick_reference_face_id(self, subject_images: List[StoredImage]) -> str | None:
-        if not self.face_client:
-            return None
-        for si in subject_images:
-            fid = self.face_client.best_face_id(str(si.path))
-            if fid:
-                return fid
-        return None
+    def _pick_reference(self, subject_images: List[StoredImage]):
+        if self.face_client:
+            for si in subject_images:
+                fid = self.face_client.best_face_id(str(si.path))
+                if fid:
+                    return ("azure", fid)
+        if self.local_face:
+            for si in subject_images:
+                emb = self.local_face.best_embedding(str(si.path))
+                if emb is not None:
+                    return ("local", emb)
+        return (None, None)
 
-    def _verify_images(self, subject_id: str, reference_face_id: str | None, images: List[StoredImage]) -> List[Tuple[StoredImage, bool, float]]:
+    def _verify_images(self, subject_id: str, reference_type, reference_value, images: List[StoredImage]) -> List[Tuple[StoredImage, bool, float]]:
         results: List[Tuple[StoredImage, bool, float]] = []
         for si in images:
             is_match = False
             score = 0.0
-            if reference_face_id and self.face_client:
-                match, conf = self.face_client.verify_image_against_reference(str(si.path), reference_face_id)
+            if reference_type == "azure" and self.face_client:
+                match, conf = self.face_client.verify_image_against_reference(str(si.path), reference_value)
                 is_match = bool(match) or conf >= self.config.face.confidence_threshold
                 score = conf
+            elif reference_type == "local" and self.local_face is not None:
+                match, sim = self.local_face.verify_image_against_reference(str(si.path), reference_value)
+                is_match = bool(match) or sim >= self.config.face.similarity_threshold
+                score = sim
             results.append((si, is_match, score))
         return results
 
@@ -105,15 +120,16 @@ class Pipeline:
             if "instagram_public" in platforms:
                 insta_meta = self._collect_instagram(subject)
 
-            ref_face_id = self._pick_reference_face_id(ddg_images) if ddg_images else None
-            verified = self._verify_images(subject.id, ref_face_id, ddg_images) if ddg_images else []
+            ref_type, ref_val = self._pick_reference(ddg_images) if ddg_images else (None, None)
+            verified = self._verify_images(subject.id, ref_type, ref_val, ddg_images) if ddg_images else []
 
             subject_record = {
                 "id": subject.id,
                 "names": subject.names,
                 "usernames": subject.usernames,
                 "instagram": insta_meta,
-                "reference_face_available": bool(ref_face_id),
+                "reference_face_available": bool(ref_val is not None),
+                "reference_type": ref_type,
             }
             all_results["subjects"].append(subject_record)
 

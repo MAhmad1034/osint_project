@@ -11,3 +11,6 @@ Jinja2>=3.1.4
 instaloader>=4.13.1
 tenacity>=8.5.0
 pandas>=2.2.2
+insightface>=0.7.3
+onnxruntime>=1.19.2
+numpy>=1.26.0

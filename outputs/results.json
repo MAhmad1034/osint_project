@@ -7,7 +7,8 @@
       ],
       "usernames": [],
       "instagram": {},
-      "reference_face_available": false
+      "reference_face_available": false,
+      "reference_type": null
     },
     {
       "id": "subject_b",
@@ -16,7 +17,8 @@
       ],
       "usernames": [],
       "instagram": {},
-      "reference_face_available": false
+      "reference_face_available": false,
+      "reference_type": null
     }
   ],
   "images": []

@@ -13,8 +13,9 @@ search:
   image_results_per_query: 30
 
 face:
-  provider: azure
-  # Use environment variables AZURE_FACE_ENDPOINT and AZURE_FACE_KEY
+  provider: local_insightface
+  similarity_threshold: 0.35
+  # Optional Azure settings via env vars if you switch provider to 'azure'
   confidence_threshold: 0.67
 
 report:
